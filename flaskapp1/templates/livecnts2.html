@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Aaron Berdanier - The Data Incubator</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+		<link rel="stylesheet" href="https://cdn.pydata.org/bokeh/release/bokeh-0.11.1.min.css" type="text/css" />
+		<script type="text/javascript" src="https://cdn.pydata.org/bokeh/release/bokeh-0.11.1.min.js"></script>
+		{{ script | safe }}
+	</head>
+	<body>
+		<div>
+  			<h1>That is some data!</h1>
+				<form id='answerform' method='post' action='livecnts'>
+					<input type="submit" value="View data">
+		    </form>
+		</div>
+
+		<h1>There are {{totbus}} busses on the road right now...</h1>
+    <h1>That is {{histfrac}}% of the average at this time of day.</h1>
+		<div class='bokeh' width="100%">
+			{{ div | safe }}
+		</div>
+	</body>
+</html>

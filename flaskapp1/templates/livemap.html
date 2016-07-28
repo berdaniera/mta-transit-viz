@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      #map { height: 700px; }
+    </style>
+
+    <meta charset="utf-8">
+    <title>Aaron Berdanier - The Data Incubator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='leaflet/leaflet.css') }}" />
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="{{ url_for('static', filename='leaflet/leaflet.js') }}"></script>
+
+  </head>
+  <body>
+    <h1>Live data updates every 30 seconds. Where them busses at? Zoom in to find out...</h1>
+
+    <div id="map"></div>
+
+    <script src="{{ url_for('static', filename='leaflet/leaflet-heat.js') }}"></script>
+    <script>
+      var map = L.map('map');
+
+      map.setView([40.75, -74],12); // default to DC
+
+      L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles: ESRI'
+      }).addTo(map);
+
+      //var heat = L.heatLayer([]).addTo(map);
+      var buspoints = [[0,0]];
+      var heat = L.heatLayer(buspoints);
+      heat.addTo(map);
+      function poll(){
+         setTimeout(function(){
+           $.ajax({
+             type: 'POST',
+             url:'/_livedata',
+             success: function(response){
+                 map.removeLayer(heat);
+                 buspoints = response.result;
+                 console.log(response.result);
+                 heat = L.heatLayer(buspoints).addTo(map);
+                 poll();
+             },
+             error: function(error){
+               console.log(error);
+               poll();
+             }
+           });
+        }, 5000);
+      };
+      poll();
+
+
+
+
+
+    </script>
+
+
+  </body>
+</html>

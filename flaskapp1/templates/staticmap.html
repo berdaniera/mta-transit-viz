@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      #map { height: 700px; }
+    </style>
+
+    <meta charset="utf-8">
+    <title>Aaron Berdanier - The Data Incubator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='leaflet/leaflet.css') }}" />
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="{{ url_for('static', filename='leaflet/leaflet.js') }}"></script>
+
+  </head>
+  <body>
+    <h1>Choose a date and time range to get some data.</h1>
+
+      Date: <select name="date0" id='date0'>
+              {% for o in dates %}
+                  <option value="{{ o }}">{{ o }}</option>
+              {% endfor %}
+      </select>
+      Start time: <select name="time0" id='time0'>
+              {% for t in times %}
+                  <option value="{{ t }}">{{ t }}</option>
+              {% endfor %}
+      </select>
+      End time: <select name="time1" id='time1'>
+              {% for u in times %}
+                  <option value="{{ u }}">{{ u }}</option>
+              {% endfor %}
+      </select>
+      <input id='answerform' type="submit" value="View data">
+
+
+    <div id="map"></div>
+
+    <script src="{{ url_for('static', filename='leaflet/leaflet-heat.js') }}"></script>
+    <script>
+      var map = L.map('map');
+
+      map.setView([40.75, -74],12); // default to DC
+
+      L.tileLayer('http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles: ESRI'
+      }).addTo(map);
+
+      var buspoints = [[0,0]];
+      var heat = L.heatLayer(buspoints);
+      heat.addTo(map);
+      $(function() {
+        $('#answerform').click(function(){
+          var data={
+           date0: $('#date0').val(),
+           time0: $('#time0').val(),
+           time1: $('#time1').val()
+           //add other properties similarly
+          }
+          console.log(JSON.stringify(data));
+            $.ajax({
+              type: 'POST',
+              url:'/_getOutput',
+              data: JSON.stringify(data),
+              contentType: 'application/json;charset=UTF-8',
+              success: function(response){
+                  map.removeLayer(heat);
+                  var buspoints = response.result;
+                  console.log(response.result);
+                  heat = L.heatLayer(buspoints).addTo(map);
+              },
+              error: function(error){
+                console.log(error);
+              }
+            });
+        });
+      });
+      
+
+    </script>
+
+
+  </body>
+</html>

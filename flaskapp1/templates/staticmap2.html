@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      #map { height: 500px; }
+    </style>
+
+    <meta charset="utf-8">
+    <title>Aaron Berdanier - The Data Incubator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='leaflet/leaflet.css') }}" />
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="{{ url_for('static', filename='leaflet/leaflet.js') }}"></script>
+  </head>
+  <body>
+    <h1>Choose a date and time range to get some data.</h1>
+    <form id='answerform' method='post' action='staticmap'>
+      Date: <select name="date0">
+              {% for o in dates %}
+                  <option value="{{ o }}">{{ o }}</option>
+              {% endfor %}
+      </select>
+      Start time: <select name="time0">
+              {% for t in times %}
+                  <option value="{{ t }}">{{ t }}</option>
+              {% endfor %}
+      </select>
+      End time: <select name="time1">
+              {% for u in times %}
+                  <option value="{{ u }}">{{ u }}</option>
+              {% endfor %}
+      </select>
+      <input type="submit" value="View data">
+    </form>
+
+    <div id="map"></div>
+
+
+  </body>
+</html>
